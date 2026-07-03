@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# NYRR Race Spot Watcher — configuration
+# No secrets in here. Gmail credentials come from environment / GitHub Secrets.
+# ─────────────────────────────────────────────────────────────────────────────
+
+selection:
+  # Only watch events whose listing card carries ALL of these tags.
+  # Matching is case-insensitive and substring-based ("9+1" matches "9+1 Credit").
+  require_tags: ["9+1 Credit"]
+
+  include_registration: true   # watch race-entry openings
+  include_volunteer: true      # watch volunteer-slot openings
+
+  # Optional extra filters. Leave empty for "everything that has the tag".
+  only_names: []               # e.g. ["Queens 10K"] -> only titles containing this
+  exclude_names: []            # e.g. ["Marathon"]   -> skip titles containing this
+
+listings:
+  # The pages that render the .upcoming-race-details cards.
+  registration: "https://www.nyrr.org/run/race-calendar"
+  volunteer: "https://www.nyrr.org/getinvolved/volunteeropportunities"
+
+# The listing pages live on www.nyrr.org (bot-disallowed in robots.txt), so we
+# scrape them only occasionally to discover event URLs, then poll the permissive
+# events.nyrr.org pages every run. Refresh the discovered list this often:
+discovery_refresh_hours: 12
+
+# Where alerts are sent. Can be overridden by the RECIPIENT_EMAIL secret.
+recipient_email: "leilatroxell@gmail.com"
+
+# Politeness knobs.
+user_agent: "nyrr-watcher/1.0 (personal race-spot monitor)"
+request_delay_seconds: 1.0     # pause between event-page fetches
+
+# Optional: suppress emails during these local (America/New_York) hours, e.g.
+# [23, 7] = 11pm–7am. Alerts are still detected and will fire at the next
+# non-quiet run. Usually best left null for time-sensitive race spots.
+quiet_hours: null
