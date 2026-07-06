@@ -3,36 +3,42 @@
 # No secrets in here. Gmail credentials come from environment / GitHub Secrets.
 # ─────────────────────────────────────────────────────────────────────────────
 
+# ── DISCOVERY ────────────────────────────────────────────────────────────────
+# The bot tries these paths in order:
+#   1. Haku widget API (auto — no config needed; finds all 9+1 events)
+#   2. Seed events     (manual fallback — paste events.nyrr.org URLs below)
+#   3. Listing scrape  (auto fallback — scrapes the NYRR listing pages)
+#
+# If Haku works (it should), paths 2 and 3 are never used.
+
 selection:
-  # Only watch events whose listing card carries ALL of these tags.
-  # Matching is case-insensitive and substring-based ("9+1" matches "9+1 Credit").
   require_tags: ["9+1 Credit"]
-
-  include_registration: true   # watch race-entry openings
-  include_volunteer: true      # watch volunteer-slot openings
-
-  # Optional extra filters. Leave empty for "everything that has the tag".
+  include_registration: true
+  include_volunteer: true
   only_names: []               # e.g. ["Queens 10K"] -> only titles containing this
   exclude_names: []            # e.g. ["Marathon"]   -> skip titles containing this
 
+# ── SEED EVENTS (fallback if Haku API is blocked) ────────────────────────────
+# Paste events.nyrr.org URLs here. Only used if Haku discovery returns nothing.
+seed_events: []
+  # - url: "https://events.nyrr.org/nyrr-jersey-city-5k"
+  #   kind: registration
+  # - url: "https://events.nyrr.org/nyrr-retro-4-miler-volunteers"
+  #   kind: volunteer
+
+# ── LISTING PAGES (fallback — currently JS-rendered, unlikely to work) ───────
 listings:
-  # The pages that render the .upcoming-race-details cards.
   registration: "https://www.nyrr.org/run/race-calendar"
   volunteer: "https://www.nyrr.org/getinvolved/volunteeropportunities"
 
-# The listing pages live on www.nyrr.org (bot-disallowed in robots.txt), so we
-# scrape them only occasionally to discover event URLs, then poll the permissive
-# events.nyrr.org pages every run. Refresh the discovered list this often:
+# Cache discovery results so we don't re-hit the API every 30 min.
 discovery_refresh_hours: 12
 
-# Where alerts are sent. Can be overridden by the RECIPIENT_EMAIL secret.
+# ── Notification ─────────────────────────────────────────────────────────────
 recipient_email: "leilatroxell@gmail.com"
 
-# Politeness knobs.
+# ── Politeness ───────────────────────────────────────────────────────────────
 user_agent: "nyrr-watcher/1.0 (personal race-spot monitor)"
-request_delay_seconds: 1.0     # pause between event-page fetches
+request_delay_seconds: 1.0
 
-# Optional: suppress emails during these local (America/New_York) hours, e.g.
-# [23, 7] = 11pm–7am. Alerts are still detected and will fire at the next
-# non-quiet run. Usually best left null for time-sensitive race spots.
 quiet_hours: null

@@ -2,14 +2,21 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
 
 
 @dataclass
+class SeedEvent:
+    url: str
+    kind: str  # "registration" | "volunteer"
+
+
+@dataclass
 class Config:
+    seed_events: list[SeedEvent]
     require_tags: list[str]
     include_registration: bool
     include_volunteer: bool
@@ -30,6 +37,10 @@ class Config:
     def email_ready(self) -> bool:
         return bool(self.gmail_address and self.gmail_app_password and self.recipient_email)
 
+    @property
+    def use_seeds(self) -> bool:
+        return len(self.seed_events) > 0
+
 
 def load_config(path: str | Path = "config.yaml") -> Config:
     raw = yaml.safe_load(Path(path).read_text())
@@ -38,7 +49,13 @@ def load_config(path: str | Path = "config.yaml") -> Config:
 
     recipient = os.environ.get("RECIPIENT_EMAIL") or raw.get("recipient_email", "")
 
+    seeds = []
+    for entry in raw.get("seed_events") or []:
+        if entry.get("url"):
+            seeds.append(SeedEvent(url=entry["url"], kind=entry.get("kind", "registration")))
+
     return Config(
+        seed_events=seeds,
         require_tags=sel.get("require_tags", []),
         include_registration=sel.get("include_registration", True),
         include_volunteer=sel.get("include_volunteer", True),

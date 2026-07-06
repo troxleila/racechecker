@@ -19,7 +19,7 @@ from zoneinfo import ZoneInfo
 
 from . import notifier, state
 from .config import Config, load_config
-from .fetcher import check_event, discover, make_session
+from .fetcher import check_event, discover, discover_haku, make_session
 from .models import ListedEvent, Opening
 
 NY_TZ = ZoneInfo("America/New_York")
@@ -37,12 +37,32 @@ def get_events(cfg: Config, session, force_refresh: bool) -> list[ListedEvent]:
               f"{state.cache_age_hours(cache):.1f}h old)")
         return [ListedEvent(**e) for e in cache["events"]]
 
+    # ── Path 1: Haku widget API (structured JSON, no HTML parsing) ──
+    events = discover_haku(cfg, session)
+    if events:
+        print(f"[discover] Haku API succeeded: {len(events)} events")
+        state.save_cache([asdict(e) for e in events])
+        return events
+
+    # ── Path 2: Seed mode (explicit URLs from config.yaml) ──
+    if cfg.use_seeds:
+        events = [
+            ListedEvent(
+                name=s.url.split("/")[-1].replace("-", " ").title(),
+                tags=["seed"],
+                event_url=s.url,
+                kind=s.kind,
+            )
+            for s in cfg.seed_events
+        ]
+        print(f"[discover] seed mode: {len(events)} event(s) from config.yaml")
+        return events
+
+    # ── Path 3: Listing-page scrape (fallback) ──
     events = discover(cfg, session)
     if events:
         state.save_cache([asdict(e) for e in events])
     elif cache is not None:
-        # Discovery came back empty but we have a prior list — reuse it rather
-        # than go blind (listing pages occasionally hiccup).
         print("[discover] empty result; falling back to cached list")
         return [ListedEvent(**e) for e in cache["events"]]
     return events

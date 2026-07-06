@@ -95,7 +95,7 @@ EVENT_PAGE_FILLED = """
 
 def _cfg(**over):
     base = dict(
-        require_tags=["9+1 Credit"], include_registration=True, include_volunteer=True,
+        seed_events=[], require_tags=["9+1 Credit"], include_registration=True, include_volunteer=True,
         only_names=[], exclude_names=[], listing_registration="", listing_volunteer="",
         discovery_refresh_hours=12, recipient_email="x@y.com", user_agent="t",
         request_delay_seconds=0, quiet_hours=None, gmail_address=None, gmail_app_password=None,
