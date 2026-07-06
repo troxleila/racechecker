@@ -1,0 +1,34 @@
+name: NYRR heartbeat
+
+on:
+  schedule:
+    - cron: "0 13 * * 1"        # Mondays 13:00 UTC — "still watching" email
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Send heartbeat
+        run: python -m watcher.main --heartbeat
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+      - name: Commit heartbeat (keeps repo active)
+        run: |
+          git config user.name "nyrr-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          if ! git diff --cached --quiet; then
+            git commit -m "Heartbeat [skip ci]"
+            git push
+          fi
