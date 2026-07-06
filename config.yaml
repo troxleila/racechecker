@@ -20,11 +20,13 @@ selection:
 
 # ── SEED EVENTS (fallback if Haku API is blocked) ────────────────────────────
 # Paste events.nyrr.org URLs here. Only used if Haku discovery returns nothing.
-seed_events: []
-  # - url: "https://events.nyrr.org/nyrr-jersey-city-5k"
-  #   kind: registration
-  # - url: "https://events.nyrr.org/nyrr-retro-4-miler-volunteers"
-  #   kind: volunteer
+seed_events:
+  - url: "https://events.nyrr.org/nyrr-jersey-city-5k"
+    kind: registration
+  - url: "https://events.nyrr.org/nyrr-team-champs"
+    kind: registration
+  - url: "https://events.nyrr.org/nyrr-retro-4-miler-volunteers"
+    kind: volunteer
 
 # ── LISTING PAGES (fallback — currently JS-rendered, unlikely to work) ───────
 listings:
