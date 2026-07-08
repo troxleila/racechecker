@@ -3,10 +3,10 @@
     "last": "2026-07-06T16:15:08.324846+00:00"
   },
   "volunteer:3795532a07f238d3400e:397c391098ab71eadefb": {
-    "alerted_for": "OPEN",
+    "alerted_for": null,
     "event_name": "9/11 Memorial & Museum 4M - Volunteers",
-    "last_seen": "2026-07-08T01:00:53.298634+00:00",
-    "last_status": "OPEN",
+    "last_seen": "2026-07-08T04:18:10.250724+00:00",
+    "last_status": "CLOSED",
     "option_name": "Shifts starting from 06:30 AM to 10:30 AM"
   }
 }
