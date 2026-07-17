@@ -3,10 +3,10 @@
     "last": "2026-07-13T15:39:11.047541+00:00"
   },
   "registration:fcda115fba77d7d2c30c:1885b293ed64ae9e72f5": {
-    "alerted_for": "OPEN",
+    "alerted_for": null,
     "event_name": "NYRR Jersey City 5K",
-    "last_seen": "2026-07-17T17:39:24.070745+00:00",
-    "last_status": "OPEN",
+    "last_seen": "2026-07-17T19:15:31.074869+00:00",
+    "last_status": "CLOSED",
     "option_name": "Eligible for 9+1 Credit \u2013 NYRR Jersey City 5K"
   },
   "volunteer:3795532a07f238d3400e:397c391098ab71eadefb": {
